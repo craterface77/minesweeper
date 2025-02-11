@@ -2,5 +2,13 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "prettier.documentSelectors": ["**/*.sol"],
-  "solidity.formatter": "prettier"
+  "solidity.formatter": "prettier",
+  "wake.compiler.solc.remappings": [
+    "@openzeppelin/=node_modules/@openzeppelin/",
+    "fhevm-contracts/=node_modules/fhevm-contracts/",
+    "fhevm-core-contracts/=node_modules/fhevm-core-contracts/",
+    "fhevm/=node_modules/fhevm/",
+    "hardhat-deploy/=node_modules/hardhat-deploy/",
+    "hardhat/=node_modules/hardhat/"
+  ]
 }
