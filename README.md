@@ -8,6 +8,9 @@ This project demonstrates the use of FHE for privacy-preserving gameplay in smar
 
 This project was build using the [fhevm-hardhat-template](https://github.com/zama-ai/fhevm-hardhat-template/generate)
 
+## Contract Address
+Contract Address on Sepolia: [0x898Cba70b3853DB431f7668068Ad38B7ce05D3f4](https://sepolia.etherscan.io/address/0x898cba70b3853db431f7668068ad38b7ce05d3f4)
+
 ## Usage
 
 ### Pre Requisites
@@ -54,6 +57,40 @@ decryptions will be simulated by default):
 
 ```sh
 pnpm test
+```
+
+#### Test Logs
+```
+❯ npx hardhat test
+
+
+  FHEMinesweeper
+    ✔ should allow a player to start a game (40ms)
+    ✔ should prevent starting a new game while one is active (67ms)
+    ✔ should prevent wrong coordinates when requesting cell reveal (45ms)
+Revealed cell value: 0
+    ✔ should allow a player to request cell reveal and check if it's a mine or not (293ms)
+    ✔ should prevent revealing a cell in an inactive game
+Revealed cell at (0, 0) has value: 0
+Revealed cell at (0, 1) has value: 0
+Revealed cell at (0, 2) has value: 0
+Revealed cell at (0, 3) has value: 0
+Revealed cell at (0, 4) has value: 0
+Revealed cell at (0, 5) has value: 0
+Revealed cell at (0, 6) has value: 0
+Revealed cell at (0, 7) has value: 0
+Revealed cell at (1, 0) has value: 0
+Revealed cell at (1, 1) has value: 0
+Revealed cell at (1, 2) has value: 0
+Revealed cell at (1, 3) has value: 0
+Revealed cell at (1, 4) has value: 0
+Revealed cell at (1, 5) has value: 0
+Game lost! A mine was revealed.
+X:  1 Y:  6
+    ✔ should lose the game when a mine is revealed (233ms)
+
+
+  6 passing (710ms)
 ```
 
 ### Lint Solidity

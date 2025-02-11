@@ -9,8 +9,6 @@ import type { NetworkUserConfig } from "hardhat/types";
 import CustomProvider from "./CustomProvider";
 // Adjust the import path as needed
 import "./tasks/accounts";
-import "./tasks/etherscanVerify";
-import "./tasks/mintMyConfidentialERC20";
 import { setCodeMocked } from "./test/mockedSetup";
 
 extendProvider(async (provider) => {
