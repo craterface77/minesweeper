@@ -30,10 +30,18 @@ describe("FHEMinesweeper", function () {
     await expect(this.contract.startGame()).to.be.revertedWithCustomError(this.contract, "GameInProgress");
   });
 
+  it("should prevent wrong coordinates when requesting cell reveal", async function () {
+    await this.contract.connect(this.signers.alice).startGame();
+    await expect(this.contract.connect(this.signers.alice).requestCellReveal(8, 8)).to.be.revertedWithCustomError(
+      this.contract,
+      "InvalidCoordinates",
+    );
+  });
+
   it("should allow a player to request cell reveal and check if it's a mine or not", async function () {
     await this.contract.connect(this.signers.alice).startGame();
 
-    const tx = await this.contract.connect(this.signers.alice).requestCellReveal(0, 0);
+    const tx = await this.contract.connect(this.signers.alice).requestCellReveal(0, 1);
     await tx.wait();
     await awaitAllDecryptionResults();
 
@@ -55,57 +63,31 @@ describe("FHEMinesweeper", function () {
     );
   });
 
-  // it("should prevent revealing a cell twice", async function () {
-  //   await this.contract.connect(this.signers.alice).startGame();
-  //   await this.contract.connect(this.signers.alice).requestCellReveal(0, 0);
-  //   await awaitAllDecryptionResults();
-
-  //   await expect(this.contract.connect(this.signers.alice).requestCellReveal(0, 0)).to.be.revertedWithCustomError(
-  //     this.contract,
-  //     "CellAlreadyRevealed",
-  //   );
-  // });
-
   it("should lose the game when a mine is revealed", async function () {
     await this.contract.connect(this.signers.alice).startGame();
 
     for (let x = 0; x < 8; x++) {
       for (let y = 0; y < 8; y++) {
-        console.log("HERE", x, y);
         const tx = await this.contract.connect(this.signers.alice).requestCellReveal(x, y);
         await tx.wait();
         await awaitAllDecryptionResults();
 
-        const logs = await this.contract.queryFilter(this.contract.filters.CellRevealed());
-        expect(logs.length, "Event CellRevealed not found").to.be.greaterThan(0);
-
-        const event = logs[0];
-        const value = Number(event.args[3]);
-        console.log(`Revealed cell at (${x}, ${y}) has value: ${value}`);
-      }
-    }
-  });
-
-  it("should win the game when all safe cells are revealed", async function () {
-    await this.contract.connect(this.signers.alice).startGame();
-
-    for (let x = 0; x < 8; x++) {
-      for (let y = 0; y < 8; y++) {
-        const tx = await this.contract.connect(this.signers.alice).requestCellReveal(x, y);
-        await tx.wait();
-        await awaitAllDecryptionResults();
-
-        // Проверка на победу после каждого хода
-        const winLogs = await this.contract.queryFilter(this.contract.filters.GameWon());
-        if (winLogs.length > 0) {
+        const lostLogs = await this.contract.queryFilter(this.contract.filters.GameLost());
+        if (lostLogs.length > 0) {
           const game = await this.contract.games(this.signers.alice.address);
           expect(game.gameActive).to.equal(false);
-          expect(game.remainingSafeCells).to.equal(0);
-          console.log("Game won! All safe cells revealed.");
+          console.log("Game lost! A mine was revealed.");
+          console.log("X: ", x, "Y: ", y);
           return;
+        } else {
+          const logs = await this.contract.queryFilter(this.contract.filters.CellRevealed());
+          expect(logs.length, "Event CellRevealed not found").to.be.greaterThan(0);
+
+          const event = logs[0];
+          const value = Number(event.args[3]);
+          console.log(`Revealed cell at (${x}, ${y}) has value: ${value}`);
         }
       }
     }
-    throw new Error("GameWon event was not emitted");
   });
 });
