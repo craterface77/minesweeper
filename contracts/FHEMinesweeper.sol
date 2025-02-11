@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Unlicense
+// SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
 
 import "fhevm/lib/TFHE.sol";
@@ -51,8 +51,6 @@ contract FHEMinesweeper is SepoliaZamaFHEVMConfig, SepoliaZamaGatewayConfig, Gat
     error InvalidCoordinates();
     error CellAlreadyRevealed();
     error InvalidDecryptionResponse();
-
-    constructor() {}
 
     /**
      * @notice Starts a new Minesweeper game for the caller
